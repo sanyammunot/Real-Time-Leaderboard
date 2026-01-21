@@ -19,24 +19,24 @@ This is an ultra-high-performance, real-time leaderboard system designed to hand
 ### Backend
 - **Language**: Golang (1.23+)
 - **Framework**: Gin Gonic (HTTP Web Framework)
-- **Database**: PostgreSQL 15 (with `pgx/v5` connection pooling)
-- **Cache**: Redis 7 (Optional, prepared for caching Hot Leaderboards)
+- **Database**: PostgreSQL 15
+- **Cache**: Redis 7 
 - **Key Libraries**: `pgx` (Driver), `go-redis`
 
 ### Frontend
 - **Framework**: React Native (Expo)
-- **Platforms**: Web, Android, iOS
+- **Platforms**: Web, Android
 - **Networking**: `fetch` API
 
 ### Infrastructure
 - **Containerization**: Docker & Docker Compose
 - **Hosting**:
     - **Backend**: Render.com (Docker)
-    - **Frontend**: Vercel / Netlify (Static Export) / Expo
+    - **Frontend**: Vercel 
 
 ---
 
-## 🏗 Architecture (The "Secret Sauce")
+## 🏗 Architecture
 
 ### The Problem
 Traditional leaderboards use `ORDER BY score DESC`.
@@ -44,9 +44,9 @@ Traditional leaderboards use `ORDER BY score DESC`.
 - Running this query on every page view crashes the database.
 
 ### The Solution: Frequency Arrays (Buckets)
-Since game scores usually have a fixed range (e.g., 0 to 5000), we don't need to sort users. We count them.
+Since game scores usually have a fixed range (e.g., 100 to 5000), we don't need to sort users. We count them.
 
-1.  **Memory Structure**: An array `[5001]int`.
+1.  **Memory Structure**: An array `[5001]int` (We only use index 100-5000).
     -   Index `i` = Score.
     -   Value `arr[i]` = Number of users having that score.
 2.  **Get Rank ($O(1)$)**:
@@ -63,44 +63,6 @@ Since game scores usually have a fixed range (e.g., 0 to 5000), we don't need to
 3.  **Update DB**: Write new score to disk.
 4.  **Update Memory**: Atomically update the in-memory Histogram.
 5.  **Commit**: Release lock.
-
----
-
-## ⚡ Getting Started (Local Development)
-
-### Prerequisites
-- Docker & Docker Compose
-- Go 1.23+ (optional, if running without Docker)
-- Node.js & npm
-
-### Faster Way: Docker Compose
-This sets up Postgres, Redis, and the Backend automatically.
-
-```bash
-docker-compose up --build
-```
-- API URL: `http://localhost:8080/leaderboard`
-
-### Manual Setup
-1.  Start dependencies:
-    ```bash
-    docker-compose up postgres redis -d
-    ```
-2.  Run Backend:
-    ```bash
-    cd backend
-    go mod tidy
-    go run main.go rank_manager.go
-    ```
-
-### Run Frontend
-```bash
-cd frontend
-npm install
-npx expo start
-```
-- Press `w` for Web.
-- Press `a` for Android (requires Emulator).
 
 ---
 
