@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TextInput, SafeAreaView, StatusBar, Platform } from 'react-native';
 
-const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080' : 'http://localhost:8080';
+const API_URL = "https://real-time-leaderboard-9n7b.onrender.com";
 
 export default function App() {
   const [data, setData] = useState([]);
@@ -67,13 +67,13 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#121212" />
-      
+
       <View style={styles.header}>
         <Text style={styles.title}>🏆 Leaderboard</Text>
       </View>
 
       <View style={styles.searchContainer}>
-        <TextInput 
+        <TextInput
           style={styles.searchInput}
           placeholder="Search user..."
           placeholderTextColor="#666"
