@@ -20,13 +20,28 @@ var (
 
 func main() {
 	// 1. Initialize Redis
-	redisHost := os.Getenv("REDIS_HOST")
-	if redisHost == "" {
-		redisHost = "localhost"
+	redisURL := os.Getenv("REDIS_URL")
+	var redisOpts *redis.Options
+	var err error
+
+	if redisURL != "" {
+		redisOpts, err = redis.ParseURL(redisURL)
+		if err != nil {
+			log.Printf("Warning: Failed to parse REDIS_URL: %v", err)
+		}
 	}
-	redisClient = redis.NewClient(&redis.Options{
-		Addr: redisHost + ":6379",
-	})
+
+	if redisOpts == nil {
+		redisHost := os.Getenv("REDIS_HOST")
+		if redisHost == "" {
+			redisHost = "localhost"
+		}
+		redisOpts = &redis.Options{
+			Addr: redisHost + ":6379",
+		}
+	}
+
+	redisClient = redis.NewClient(redisOpts)
 	if err := redisClient.Ping(ctx).Err(); err != nil {
 		log.Printf("Warning: Failed to connect to Redis: %v", err)
 	} else {
@@ -34,11 +49,14 @@ func main() {
 	}
 
 	// 3. Connect to Postgres (using Pool)
-	pgHost := os.Getenv("POSTGRES_HOST")
-	if pgHost == "" {
-		pgHost = "localhost"
+	connString := os.Getenv("DATABASE_URL")
+	if connString == "" {
+		pgHost := os.Getenv("POSTGRES_HOST")
+		if pgHost == "" {
+			pgHost = "localhost"
+		}
+		connString = fmt.Sprintf("postgres://admin:password@%s:5432/leaderboard?sslmode=disable", pgHost)
 	}
-	connString := fmt.Sprintf("postgres://admin:password@%s:5432/leaderboard?sslmode=disable", pgHost)
 	var err error
 
 	// Create a connection pool instead of a single connection
