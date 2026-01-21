@@ -106,5 +106,4 @@ go run main.go
 
 ---
 
-**Made this as an assignment for Matiks**
 **Author**: Sanyam Munot
