@@ -14,6 +14,17 @@ This is an ultra-high-performance, real-time leaderboard system designed to hand
 
 ---
 
+## 🛠 Project Screenshots and Video Walkthrough
+
+<img width="1913" height="967" alt="image" src="https://github.com/user-attachments/assets/93a67fc2-137d-405f-b10b-8d342b154122" />
+
+<img width="1919" height="961" alt="image" src="https://github.com/user-attachments/assets/518b5a58-9a71-4628-a7e6-5f2a57e34bc2" />
+
+
+Video Walkthrough Watch here: https://youtu.be/YdB-9sqKswA
+
+---
+
 ## 🛠 Technology Stack
 
 ### Backend
