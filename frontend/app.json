@@ -1,0 +1,17 @@
+{
+    "expo": {
+        "name": "leaderboard-app",
+        "slug": "leaderboard-app",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "userInterfaceStyle": "dark",
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "backgroundColor": "#121212"
+            }
+        }
+    }
+}

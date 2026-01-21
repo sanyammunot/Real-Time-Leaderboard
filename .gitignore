@@ -1,0 +1,27 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# Go
+vendor/
+go.sum
+
+# Node
+node_modules/
+dist/
+build/
+npm-debug.log
+yarn-error.log
