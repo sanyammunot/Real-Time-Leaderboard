@@ -58,7 +58,7 @@ func main() {
 		connString = fmt.Sprintf("postgres://admin:password@%s:5432/leaderboard?sslmode=disable", pgHost)
 	}
 	// Create a connection pool instead of a single connection
-	config, err = pgxpool.ParseConfig(connString)
+	config, err := pgxpool.ParseConfig(connString)
 	if err != nil {
 		log.Fatalf("Unable to parse config: %v", err)
 	}
