@@ -20,8 +20,12 @@ var (
 
 func main() {
 	// 1. Initialize Redis
+	redisHost := os.Getenv("REDIS_HOST")
+	if redisHost == "" {
+		redisHost = "localhost"
+	}
 	redisClient = redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: redisHost + ":6379",
 	})
 	if err := redisClient.Ping(ctx).Err(); err != nil {
 		log.Printf("Warning: Failed to connect to Redis: %v", err)
@@ -30,7 +34,11 @@ func main() {
 	}
 
 	// 3. Connect to Postgres (using Pool)
-	connString := "postgres://admin:password@localhost:5432/leaderboard?sslmode=disable"
+	pgHost := os.Getenv("POSTGRES_HOST")
+	if pgHost == "" {
+		pgHost = "localhost"
+	}
+	connString := fmt.Sprintf("postgres://admin:password@%s:5432/leaderboard?sslmode=disable", pgHost)
 	var err error
 
 	// Create a connection pool instead of a single connection
