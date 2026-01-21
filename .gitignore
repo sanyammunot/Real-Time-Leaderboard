@@ -17,7 +17,6 @@ Thumbs.db
 
 # Go
 vendor/
-go.sum
 
 # Node
 node_modules/
