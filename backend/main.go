@@ -256,22 +256,37 @@ func SimulateScoreUpdate(c *gin.Context) {
 		return
 	}
 
-	// 1. Get Old Rating
-	var oldRating int
-	err := db.QueryRow(ctx, "SELECT rating FROM users WHERE username=$1", body.Username).Scan(&oldRating)
+	// Start Transaction
+	tx, err := db.Begin(ctx)
 	if err != nil {
+		c.JSON(500, gin.H{"error": "failed to start transaction"})
+		return
+	}
+	defer tx.Rollback(ctx)
+
+	// 1. Get Old Rating with LOCK
+	var oldRating int
+	err = tx.QueryRow(ctx, "SELECT rating FROM users WHERE username=$1 FOR UPDATE", body.Username).Scan(&oldRating)
+	if err != nil {
+		// If user not found, we can't update. Rolling back automatically via defer.
 		c.JSON(404, gin.H{"error": "user not found"})
 		return
 	}
 
 	// 2. Update DB
-	_, err = db.Exec(ctx, "UPDATE users SET rating=$1 WHERE username=$2", body.NewRating, body.Username)
+	_, err = tx.Exec(ctx, "UPDATE users SET rating=$1 WHERE username=$2", body.NewRating, body.Username)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	// 3. Update RankManager (Live)
+	// 3. Commit Transaction
+	if err := tx.Commit(ctx); err != nil {
+		c.JSON(500, gin.H{"error": "failed to commit transaction"})
+		return
+	}
+
+	// 4. Update RankManager (Live) - Only after successful commit
 	GlobalRankManager.UpdateUserRating(oldRating, body.NewRating)
 
 	c.JSON(200, gin.H{"status": "updated", "old": oldRating, "new": body.NewRating})
