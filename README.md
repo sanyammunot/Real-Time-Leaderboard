@@ -46,6 +46,9 @@ This is an ultra-high-performance, real-time leaderboard system designed to hand
     - **Backend**: Render.com (Docker)
     - **Frontend**: Vercel 
 
+## Deployment Notes
+The backend is hosted on Render (free tier), which may experience cold-start delays after inactivity.
+Once active, the service responds normally and maintains in-memory state for fast rank calculations.
 ---
 
 ## 🏗 Architecture
